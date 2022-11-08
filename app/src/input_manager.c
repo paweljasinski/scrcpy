@@ -335,7 +335,7 @@ simulate_virtual_finger(struct sc_input_manager *im,
     msg.inject_touch_event.action = action;
     msg.inject_touch_event.position.screen_size = im->screen->frame_size;
     msg.inject_touch_event.position.point = point;
-    msg.inject_touch_event.pointer_id = POINTER_ID_VIRTUAL_FINGER;
+    msg.inject_touch_event.pointer_id = POINTER_ID_VIRTUAL_FINGER_2;
     msg.inject_touch_event.pressure = up ? 0.0f : 1.0f;
     msg.inject_touch_event.buttons = 0;
 
@@ -569,6 +569,7 @@ sc_input_manager_process_mouse_motion(struct sc_input_manager *im,
         .buttons_state =
             sc_mouse_buttons_state_from_sdl(event->state,
                                             im->forward_all_clicks),
+        .simulate_touch = !im->forward_all_clicks,
     };
 
     assert(im->mp->ops->process_mouse_motion);
@@ -579,6 +580,7 @@ sc_input_manager_process_mouse_motion(struct sc_input_manager *im,
 
     if (im->vfinger_down) {
         assert(!im->mp->relative_mode); // assert one more time
+        assert(!im->forward_all_clicks); // never use when forward_all_clicks active
         struct sc_point mouse =
            sc_screen_convert_window_to_frame_coords(im->screen, event->x,
                                                     event->y);
@@ -690,6 +692,7 @@ sc_input_manager_process_mouse_button(struct sc_input_manager *im,
         .buttons_state =
             sc_mouse_buttons_state_from_sdl(sdl_buttons_state,
                                             im->forward_all_clicks),
+        .simulate_touch = !im->forward_all_clicks,
     };
 
     assert(im->mp->ops->process_mouse_click);
@@ -697,6 +700,11 @@ sc_input_manager_process_mouse_button(struct sc_input_manager *im,
 
     if (im->mp->relative_mode) {
         assert(!im->vfinger_down); // vfinger must not be used in relative mode
+        // No pinch-to-zoom simulation
+        return;
+    }
+    if (im->forward_all_clicks) {
+        assert(!im->vfinger_down); // vfinger must not be used when forward_all_clicks is active
         // No pinch-to-zoom simulation
         return;
     }
@@ -717,6 +725,7 @@ sc_input_manager_process_mouse_button(struct sc_input_manager *im,
         struct sc_point mouse =
             sc_screen_convert_window_to_frame_coords(im->screen, event->x,
                                                                  event->y);
+
         struct sc_point vfinger = inverse_point(mouse, im->screen->frame_size);
         enum android_motionevent_action action = down
                                                ? AMOTION_EVENT_ACTION_DOWN

@@ -354,6 +354,7 @@ struct sc_mouse_click_event {
     enum sc_action action;
     enum sc_mouse_button button;
     uint8_t buttons_state; // bitwise-OR of sc_mouse_button values
+    bool simulate_touch; // adjust event source to touchscreen before injecting
 };
 
 struct sc_mouse_scroll_event {
@@ -368,6 +369,7 @@ struct sc_mouse_motion_event {
     int32_t xrel;
     int32_t yrel;
     uint8_t buttons_state; // bitwise-OR of sc_mouse_button values
+    bool simulate_touch; // adjust event source to touchscreen before injecting
 };
 
 struct sc_touch_event {

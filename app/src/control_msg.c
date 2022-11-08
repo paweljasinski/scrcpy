@@ -167,7 +167,7 @@ sc_control_msg_log(const struct sc_control_msg *msg) {
             int action = msg->inject_touch_event.action
                        & AMOTION_EVENT_ACTION_MASK;
             uint64_t id = msg->inject_touch_event.pointer_id;
-            if (id == POINTER_ID_MOUSE || id == POINTER_ID_VIRTUAL_FINGER) {
+            if (id == POINTER_ID_MOUSE || id == POINTER_ID_VIRTUAL_FINGER_1 || id == POINTER_ID_VIRTUAL_FINGER_2) {
                 // string pointer id
                 LOG_CMSG("touch [id=%s] %-4s position=%" PRIi32 ",%" PRIi32
                              " pressure=%g buttons=%06lx",
