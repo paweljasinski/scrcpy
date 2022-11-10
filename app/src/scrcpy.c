@@ -325,6 +325,7 @@ scrcpy(struct scrcpy_options *options) {
         .tcpip_dst = options->tcpip_dst,
         .cleanup = options->cleanup,
         .power_on = options->power_on,
+        .forward_all_clicks = options->forward_all_clicks,
     };
 
     static const struct sc_server_callbacks cbs = {

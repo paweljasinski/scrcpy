@@ -23,6 +23,7 @@ public class Controller {
     private final DeviceMessageSender sender;
     private final boolean clipboardAutosync;
     private final boolean powerOn;
+    private final boolean forwardAllClicks;
 
     private final KeyCharacterMap charMap = KeyCharacterMap.load(KeyCharacterMap.VIRTUAL_KEYBOARD);
 
@@ -33,11 +34,12 @@ public class Controller {
 
     private boolean keepPowerModeOff;
 
-    public Controller(Device device, DesktopConnection connection, boolean clipboardAutosync, boolean powerOn) {
+    public Controller(Device device, DesktopConnection connection, boolean clipboardAutosync, boolean powerOn, boolean forwardAllClicks) {
         this.device = device;
         this.connection = connection;
         this.clipboardAutosync = clipboardAutosync;
         this.powerOn = powerOn;
+        this.forwardAllClicks = forwardAllClicks;
         initPointers();
         sender = new DeviceMessageSender(connection);
     }
@@ -210,13 +212,11 @@ public class Controller {
         }
 
         // Right-click and middle-click only work if the source is a mouse
-        boolean nonPrimaryButtonPressed = (buttons & ~MotionEvent.BUTTON_PRIMARY) != 0;
-        int source = nonPrimaryButtonPressed ? InputDevice.SOURCE_MOUSE : InputDevice.SOURCE_TOUCHSCREEN;
+        int source = forwardAllClicks ? InputDevice.SOURCE_MOUSE : InputDevice.SOURCE_TOUCHSCREEN;
         if (source != InputDevice.SOURCE_MOUSE) {
             // Buttons must not be set for touch events
             buttons = 0;
         }
-
         MotionEvent event = MotionEvent
                 .obtain(lastTouchDown, now, action, pointerCount, pointerProperties, pointerCoords, 0, buttons, 1f, 1f, DEFAULT_DEVICE_ID, 0, source,
                         0);

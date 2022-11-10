@@ -82,7 +82,7 @@ public final class Server {
             Thread controllerThread = null;
             Thread deviceMessageSenderThread = null;
             if (control) {
-                final Controller controller = new Controller(device, connection, options.getClipboardAutosync(), options.getPowerOn());
+                final Controller controller = new Controller(device, connection, options.getClipboardAutosync(), options.getPowerOn(), options.getForwardAllClicks());
 
                 // asynchronous
                 controllerThread = startController(controller);
@@ -272,6 +272,11 @@ public final class Server {
                         options.setSendDummyByte(false);
                     }
                     break;
+                case "forward_all_clicks":
+                    boolean forwardAllClicks = Boolean.parseBoolean(value);
+                    options.setForwardAllClicks(forwardAllClicks);
+                    break;
+
                 default:
                     Ln.w("Unknown server option: " + key);
                     break;

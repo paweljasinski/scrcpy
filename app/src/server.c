@@ -252,6 +252,10 @@ execute_server(struct sc_server *server,
         // By default, power_on is true
         ADD_PARAM("power_on=false");
     }
+    if (params->forward_all_clicks) {
+        // By default, forward all clicks is false
+        ADD_PARAM("forward_all_clicks=true");
+    }
 
 #undef ADD_PARAM
 

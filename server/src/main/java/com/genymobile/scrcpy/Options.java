@@ -23,6 +23,7 @@ public class Options {
     private boolean downsizeOnError = true;
     private boolean cleanup = true;
     private boolean powerOn = true;
+    private boolean forwardAllClicks = false;
 
     // Options not used by the scrcpy client, but useful to use scrcpy-server directly
     private boolean sendDeviceMeta = true; // send device name and size
@@ -196,4 +197,13 @@ public class Options {
     public void setSendDummyByte(boolean sendDummyByte) {
         this.sendDummyByte = sendDummyByte;
     }
+
+    public boolean getForwardAllClicks() {
+        return forwardAllClicks;
+    }
+
+    public void setForwardAllClicks(boolean forwardAllClicks) {
+        this.forwardAllClicks = forwardAllClicks;
+    }
+
 }
